@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 - 김대중재단 청년위원회</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-pale: #E3F2FD;
+      --primary-dark: #0D47A1;
+      --accent: #1E88E5;
+      --text-main: #1a1a2e;
+      --text-sub: #546E7A;
+      --text-muted: #90A4AE;
+      --bg: #F8FBFF;
+      --white: #ffffff;
+      --border: #BBDEFB;
+      --shadow: 0 2px 12px rgba(21,101,192,0.10);
+      --radius: 12px;
+      --danger: #E53935;
+      --danger-pale: #FFEBEE;
+      --success: #2E7D32;
+      --success-pale: #E8F5E9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; }
+
+    /* LOGIN */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+      padding: 48px 40px; width: 100%; max-width: 400px;
+    }
+    .login-title {
+      text-align: center; margin-bottom: 8px;
+      font-size: 20px; font-weight: 700; color: var(--primary);
+    }
+    .login-sub { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; letter-spacing: 0.3px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 14px; font-family: inherit;
+      color: var(--text-main); background: white;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(21,101,192,0.08);
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 11px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; border: none; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: white; width: 100%; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--primary-pale); color: var(--primary); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: var(--danger-pale); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: white; }
+    .btn-sm { padding: 7px 14px; font-size: 12px; }
+    .login-err { color: var(--danger); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+
+    /* ADMIN LAYOUT */
+    .admin-wrap { display: none; }
+    header {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 8px rgba(21,101,192,0.07);
+    }
+    .header-inner {
+      max-width: 1000px; margin: 0 auto; padding: 0 20px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
+    .admin-main { max-width: 1000px; margin: 0 auto; padding: 32px 20px 60px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
+    @media (max-width: 760px) { .admin-main { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .panel-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px; font-weight: 700; color: var(--primary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel-header::before {
+      content: ''; width: 4px; height: 14px; background: var(--primary); border-radius: 2px;
+    }
+    .panel-body { padding: 20px 24px; }
+
+    /* EVENT LIST */
+    .event-list { display: flex; flex-direction: column; gap: 8px; }
+    .event-list-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.15s; gap: 10px;
+    }
+    .event-list-item:hover, .event-list-item.selected { background: var(--primary-pale); border-color: var(--primary); }
+    .event-list-item-info { flex: 1; min-width: 0; }
+    .event-list-item-date { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .event-list-item-name { font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-list-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .empty-list { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+
+    /* FORM */
+    .form-section { margin-bottom: 20px; }
+    .form-section-title { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+
+    .article-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+    .article-row {
+      display: grid; grid-template-columns: 1fr 1fr auto;
+      gap: 8px; align-items: center;
+    }
+    .article-row input { padding: 8px 10px; font-size: 13px; }
+    .remove-btn {
+      background: var(--danger-pale); color: var(--danger);
+      border: none; border-radius: 6px;
+      width: 30px; height: 30px; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .remove-btn:hover { background: var(--danger); color: white; }
+
+    .photo-upload-area {
+      border: 2px dashed var(--border); border-radius: 8px;
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 10px;
+    }
+    .photo-upload-area:hover, .photo-upload-area.dragover { border-color: var(--primary); background: var(--primary-pale); }
+    .photo-upload-area p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+    .photo-upload-area small { font-size: 11px; color: var(--text-muted); }
+    .photo-previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-bottom: 8px; }
+    .photo-preview-item {
+      position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .photo-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-preview-item .del-photo {
+      position: absolute; top: 2px; right: 2px;
+      background: rgba(0,0,0,0.6); color: white;
+      border: none; border-radius: 50%;
+      width: 20px; height: 20px; font-size: 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .cover-preview {
+      width: 100%; height: 140px; object-fit: cover; border-radius: 8px;
+      display: none; margin-bottom: 8px; border: 1px solid var(--border);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1a1a2e; color: white;
+      padding: 12px 24px; border-radius: 8px;
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; z-index: 9999;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--danger); }
+    .toast.success { background: var(--success); }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .form-actions .btn { flex: 1; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-title">🔐 관리자 로그인</div>
+    <div class="login-sub">김대중재단 청년위원회 아카이브 관리</div>
+    <div class="form-group">
+      <label>아이디</label>
+      <input type="text" id="loginId" placeholder="admin" />
+    </div>
+    <div class="form-group">
+      <label>비밀번호</label>
+      <input type="password" id="loginPw" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter') doLogin()" />
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr">아이디 또는 비밀번호가 틀렸습니다.</div>
+    <div style="text-align:center; margin-top:16px;">
+      <a href="index.html" style="font-size:12px; color:var(--text-muted); text-decoration:none;">← 아카이브로 돌아가기</a>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <header>
+    <div class="header-inner">
+      <div class="header-title">관리자 대시보드</div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">아카이브 보기</a>
+        <button class="btn btn-danger btn-sm" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-main">
+    <!-- LEFT: 등록된 행사 목록 -->
+    <div>
+      <div class="panel">
+        <div class="panel-header">등록된 행사 목록</div>
+        <div class="panel-body">
+          <div style="margin-bottom:12px;">
+            <button class="btn btn-primary" onclick="newEventForm()" style="width:100%">+ 새 행사 등록</button>
+          </div>
+          <div class="event-list" id="eventList">
+            <div class="empty-list">불러오는 중...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 행사 등록/수정 폼 -->
+    <div>
+      <div class="panel" id="formPanel" style="display:none">
+        <div class="panel-header" id="formPanelTitle">새 행사 등록</div>
+        <div class="panel-body">
+
+          <div class="form-section">
+            <div class="form-section-title">기본 정보</div>
+            <div class="form-group">
+              <label>날짜 *</label>
+              <input type="date" id="fDate" min="2026-04-01" max="2026-06-30" />
+            </div>
+            <div class="form-group">
+              <label>행사 이름 *</label>
+              <input type="text" id="fName" placeholder="예: 제3회 정책전달식" />
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">대표 이미지</div>
+            <img id="coverPreview" class="cover-preview" alt="대표 이미지 미리보기" />
+            <div class="photo-upload-area" id="coverUploadArea" onclick="document.getElementById('coverInput').click()">
+              <p>📷 클릭하여 대표 이미지 업로드</p>
+              <small>JPG, PNG, WEBP · 최대 10MB</small>
+            </div>
+            <input type="file" id="coverInput" accept="image/*" style="display:none" onchange="previewCover(this)" />
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">주요 기사 (최대 5개)</div>
+            <div class="article-rows" id="articleRows"></div>
+            <button class="btn btn-secondary btn-sm" onclick="addArticleRow()" id="addArticleBtn">+ 기사 추가</button>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">관련 사진 (최대 7장)</div>
+            <div class="photo-previews" id="photoPreviews"></div>
+            <div class="photo-upload-area" id="photoUploadArea" onclick="document.getElementById('photoInput').click()">
+              <p>🖼️ 클릭하여 사진 업로드 (복수 선택 가능)</p>
+              <small>JPG, PNG, WEBP · 최대 7장</small>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="addPhotoFiles(this)" />
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" onclick="cancelForm()">취소</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitEvent()">저장</button>
+          </div>
+
+        </div>
+      </div>
+      <div id="formPlaceholder" style="text-align:center; padding:60px 20px; color:var(--text-muted); font-size:14px;">
+        좌측에서 행사를 선택하거나 새 행사를 등록하세요.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://rwygxpiseympdhzkioyv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWd4cGlzZXltcGRoemtpb3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzgwNzUsImV4cCI6MjA5Mzg1NDA3NX0.3JWR3XVvePPlSgP8xDHsq49MA1wSVzIIUdCjy2Y1vJA';
+  const BUCKET = 'djyoung-events';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── AUTH ──
+  function doLogin() {
+    const id = document.getElementById('loginId').value.trim();
+    const pw = document.getElementById('loginPw').value;
+    if (id === 'admin' && pw === 'dj0603') {
+      sessionStorage.setItem('dj_admin', '1');
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = 'block';
+      loadEvents();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+  function doLogout() {
+    sessionStorage.removeItem('dj_admin');
+    location.reload();
+  }
+  if (sessionStorage.getItem('dj_admin') === '1') {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+  }
+
+  // ── EVENT LIST ──
+  let events = [];
+  let editingId = null;
+  let currentCoverFile = null;
+  let currentCoverUrl = null;
+  let photoFiles = []; // {file, url} 새 파일
+  let existingPhotoUrls = []; // 기존 URL 유지 목록
+
+  async function loadEvents() {
+    const { data } = await sb.from('events').select('*').order('event_date');
+    events = data || [];
+    renderEventList();
+  }
+
+  function renderEventList() {
+    const el = document.getElementById('eventList');
+    if (!events.length) { el.innerHTML = '<div class="empty-list">등록된 행사가 없습니다.</div>'; return; }
+    el.innerHTML = events.map(e => `
+      <div class="event-list-item ${editingId === e.id ? 'selected' : ''}" id="item-${e.id}">
+        <div class="event-list-item-info" onclick="editEvent('${e.id}')">
+          <div class="event-list-item-date">${e.event_date}</div>
+          <div class="event-list-item-name">${e.event_name}</div>
+        </div>
+        <div class="event-list-item-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editEvent('${e.id}')">수정</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}', event)">삭제</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── FORM ──
+  function showForm() {
+    document.getElementById('formPanel').style.display = 'block';
+    document.getElementById('formPlaceholder').style.display = 'none';
+  }
+  function hideForm() {
+    document.getElementById('formPanel').style.display = 'none';
+    document.getElementById('formPlaceholder').style.display = 'block';
+  }
+
+  function newEventForm() {
+    editingId = null;
+    currentCoverFile = null;
+    currentCoverUrl = null;
+    photoFiles = [];
+    existingPhotoUrls = [];
+    document.getElementById('formPanelTitle').textContent = '새 행사 등록';
+    document.getElementById('fDate').value = '';
+    document.getElementById('fName').value = '';
+    document.getElementById('coverPreview').style.display = 'none';
+    document.getElementById('coverPreview').src = '';
+    document.getElementById('articleRows').innerHTML = '';
+    document.getElementById('photoPreviews').innerHTML = '';
+    addArticleRow();
+    showForm();
+    renderEventList();
+  }
+
+  function cancelForm() {
+    editingId = null;
+    hideForm();
+    renderEventList();
+  }
+
+  function editEvent(id) {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    editingId = id;
+    currentCoverFile = null;
+    currentCoverUrl = ev.cover_image_url || null;
+    photoFiles = [];
+    existingPhotoUrls = [...(ev.photos || [])];
+
+    document.getElementById('formPanelTitle').textContent = '행사 수정';
+    document.getElementById('fDate').value = ev.event_date;
+    document.getElementById('fName').value = ev.event_name;
+
+    const coverPrev = document.getElementById('coverPreview');
+    if (currentCoverUrl) { coverPrev.src = currentCoverUrl; coverPrev.style.display = 'block'; }
+    else { coverPrev.style.display = 'none'; }
+
+    // 기사
+    document.getElementById('articleRows').innerHTML = '';
+    const articles = ev.articles || [];
+    if (articles.length === 0) addArticleRow();
+    else articles.forEach(a => addArticleRow(a.title, a.url));
+
+    // 기존 사진 프리뷰
+    renderPhotoPreviews();
+    showForm();
+    renderEventList();
+  }
+
+  function renderPhotoPreviews() {
+    const container = document.getElementById('photoPreviews');
+    const total = existingPhotoUrls.length + photoFiles.length;
+    let html = existingPhotoUrls.map((url, i) => `
+      <div class="photo-preview-item">
+        <img src="${url}" />
+        <button class="del-photo" onclick="removeExistingPhoto(${i})">×</button>
+      </div>
+    `).join('');
+    html += photoFiles.map((f, i) => `
+      <div class="photo-preview-item">
+        <img src="${f.url}" />
+        <button class="del-photo" onclick="removeNewPhoto(${i})">×</button>
+      </div>
+    `).join('');
+    container.innerHTML = html;
+    document.getElementById('photoUploadArea').style.display = total >= 7 ? 'none' : 'block';
+  }
+
+  function removeExistingPhoto(i) { existingPhotoUrls.splice(i, 1); renderPhotoPreviews(); }
+  function removeNewPhoto(i) {
+    URL.revokeObjectURL(photoFiles[i].url);
+    photoFiles.splice(i, 1);
+    renderPhotoPreviews();
+  }
+
+  // 기사 행
+  function addArticleRow(title = '', url = '') {
+    const rows = document.getElementById('articleRows');
+    if (rows.children.length >= 5) return;
+    const div = document.createElement('div');
+    div.className = 'article-row';
+    div.innerHTML = `
+      <input type="text" placeholder="기사 제목" value="${title}" class="art-title" />
+      <input type="url" placeholder="https://..." value="${url}" class="art-url" />
+      <button class="remove-btn" onclick="this.parentElement.remove(); updateAddBtn()">×</button>
+    `;
+    rows.appendChild(div);
+    updateAddBtn();
+  }
+  function updateAddBtn() {
+    const rows = document.getElementById('articleRows');
+    document.getElementById('addArticleBtn').style.display = rows.children.length >= 5 ? 'none' : 'inline-flex';
+  }
+
+  // 대표 이미지
+  function previewCover(input) {
+    const file = input.files[0];
+    if (!file) return;
+    currentCoverFile = file;
+    const url = URL.createObjectURL(file);
+    const prev = document.getElementById('coverPreview');
+    prev.src = url; prev.style.display = 'block';
+  }
+
+  // 관련 사진 추가
+  function addPhotoFiles(input) {
+    const files = Array.from(input.files);
+    const remaining = 7 - existingPhotoUrls.length - photoFiles.length;
+    files.slice(0, remaining).forEach(f => {
+      photoFiles.push({ file: f, url: URL.createObjectURL(f) });
+    });
+    input.value = '';
+    renderPhotoPreviews();
+  }
+
+  // ── SUBMIT ──
+  async function submitEvent() {
+    const date = document.getElementById('fDate').value;
+    const name = document.getElementById('fName').value.trim();
+    if (!date || !name) { showToast('날짜와 행사 이름을 입력하세요.', 'error'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span class="spinner"></span> 저장 중...';
+    btn.disabled = true;
+
+    try {
+      // 1. 대표 이미지 업로드
+      let coverUrl = currentCoverUrl;
+      if (currentCoverFile) {
+        const ext = currentCoverFile.name.split('.').pop();
+        const path = `covers/${date}_${Date.now()}.${ext}`;
+        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, currentCoverFile, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+        coverUrl = urlData.publicUrl;
+      }
+
+      // 2. 관련 사진 업로드
+      let newUploadedUrls = [];
+      for (const pf of photoFiles) {
+        const ext = pf.file.name.split('.').pop();
+        const path = `photos/${date}_${Date.now()}_${Math.random().toString(36).slice(2,6)}.${ext}`;
+        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, pf.file, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+        newUploadedUrls.push(urlData.publicUrl);
+      }
+      const allPhotos = [...existingPhotoUrls, ...newUploadedUrls];
+
+      // 3. 기사 수집
+      const articleRows = document.querySelectorAll('.article-row');
+      const articles = [];
+      articleRows.forEach(row => {
+        const t = row.querySelector('.art-title').value.trim();
+        const u = row.querySelector('.art-url').value.trim();
+        if (t && u) articles.push({ title: t, url: u });
+      });
+
+      // 4. DB 저장
+      const payload = {
+        event_date: date,
+        event_name: name,
+        cover_image_url: coverUrl || null,
+        articles,
+        photos: allPhotos,
+        updated_at: new Date().toISOString()
+      };
+
+      let dbErr;
+      if (editingId) {
+        const { error } = await sb.from('events').update(payload).eq('id', editingId);
+        dbErr = error;
+      } else {
+        const { error } = await sb.from('events').insert(payload);
+        dbErr = error;
+      }
+      if (dbErr) throw dbErr;
+
+      showToast(editingId ? '행사가 수정되었습니다.' : '행사가 등록되었습니다.', 'success');
+      cancelForm();
+      await loadEvents();
+    } catch (e) {
+      console.error(e);
+      showToast('오류가 발생했습니다: ' + (e.message || e), 'error');
+    } finally {
+      btn.innerHTML = '저장';
+      btn.disabled = false;
+    }
+  }
+
+  async function deleteEvent(id, e) {
+    e.stopPropagation();
+    if (!confirm('이 행사를 삭제하시겠습니까?')) return;
+    const { error } = await sb.from('events').delete().eq('id', id);
+    if (error) { showToast('삭제 중 오류가 발생했습니다.', 'error'); return; }
+    showToast('삭제되었습니다.', 'success');
+    if (editingId === id) cancelForm();
+    await loadEvents();
+  }
+
+  // ── TOAST ──
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  // 페이지 로드 시 로그인 상태면 바로 로드
+  if (sessionStorage.getItem('dj_admin') === '1') loadEvents();
+</script>
+</body>
+</html>

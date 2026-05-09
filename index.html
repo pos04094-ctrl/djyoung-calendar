@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>김대중재단 청년위원회 정책전달식 아카이브</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-light: #1976D2;
+      --primary-pale: #E3F2FD;
+      --primary-dark: #0D47A1;
+      --accent: #1E88E5;
+      --text-main: #1a1a2e;
+      --text-sub: #546E7A;
+      --text-muted: #90A4AE;
+      --bg: #F8FBFF;
+      --white: #ffffff;
+      --border: #BBDEFB;
+      --shadow: 0 2px 12px rgba(21,101,192,0.10);
+      --shadow-hover: 0 6px 24px rgba(21,101,192,0.18);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 8px rgba(21,101,192,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-wrap a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 12px;
+    }
+    .logo-img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+    .logo-text-fallback {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--text-sub);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    nav a:hover { background: var(--primary-pale); color: var(--primary); }
+    nav a.active { color: var(--primary); background: var(--primary-pale); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent) 100%);
+      color: white;
+      padding: 48px 20px 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 14px;
+      opacity: 0.85;
+      font-weight: 300;
+    }
+
+    /* CALENDAR SECTION */
+    .calendar-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    /* MONTH NAV */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .month-nav button {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .month-nav button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .month-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .month-nav button:disabled:hover { background: var(--white); color: var(--primary); border-color: var(--border); }
+    .month-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      min-width: 120px;
+      text-align: center;
+    }
+    .month-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .month-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .month-dot.active { background: var(--primary); transform: scale(1.3); }
+
+    /* CALENDAR GRID */
+    .calendar-wrap {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .cal-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--primary);
+    }
+    .cal-header div {
+      text-align: center;
+      padding: 12px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+    .cal-header div:first-child { color: #FFCDD2; }
+    .cal-header div:last-child { color: #BBDEFB; }
+    .cal-body {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .cal-cell {
+      border-right: 1px solid #f0f4f8;
+      border-bottom: 1px solid #f0f4f8;
+      min-height: 80px;
+      padding: 8px;
+      position: relative;
+      transition: background 0.15s;
+    }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell.empty { background: #fafcff; }
+    .cal-cell.sunday .date-num { color: #E53935; }
+    .cal-cell.saturday .date-num { color: #1565C0; }
+    .cal-cell.today { background: #EBF5FF; }
+    .cal-cell.today .date-num {
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-cell.has-event {
+      cursor: pointer;
+    }
+    .cal-cell.has-event:hover { background: var(--primary-pale); }
+    .date-num {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .event-badge {
+      margin-top: 4px;
+      background: var(--primary);
+      color: white;
+      border-radius: 6px;
+      padding: 3px 7px;
+      font-size: 10px;
+      font-weight: 500;
+      line-height: 1.4;
+      word-break: keep-all;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .event-badge:hover { background: var(--primary-dark); }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--primary);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--primary-dark);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    footer strong { color: white; }
+
+    /* LOADING */
+    .loading-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      color: var(--text-muted);
+      font-size: 14px;
+      gap: 10px;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .cal-cell { min-height: 52px; padding: 4px; }
+      .date-num { font-size: 11px; width: 22px; height: 22px; }
+      .event-badge { font-size: 9px; padding: 2px 4px; }
+      .hero h1 { font-size: 18px; }
+      .month-title { font-size: 18px; }
+      .logo-text-fallback { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <a href="index.html">
+        <img src="logo.png" alt="김대중재단 청년위원회" class="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'" />
+        <span class="logo-text-fallback" id="logo-fallback" style="display:none">김대중재단<br>청년위원회</span>
+      </a>
+    </div>
+    <nav>
+      <a href="index.html" class="active">아카이브</a>
+      <a href="about.html">위원회 소개</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>정책전달식 아카이브</h1>
+  <p>2026년 4월 · 5월 · 6월 활동 기록</p>
+</div>
+
+<div class="calendar-section">
+  <div class="month-nav">
+    <button id="prevBtn" onclick="changeMonth(-1)">&#8249;</button>
+    <div class="month-title" id="monthTitle"></div>
+    <button id="nextBtn" onclick="changeMonth(1)">&#8250;</button>
+  </div>
+  <div class="month-dots">
+    <div class="month-dot" onclick="goMonth(0)" id="dot0"></div>
+    <div class="month-dot" onclick="goMonth(1)" id="dot1"></div>
+    <div class="month-dot" onclick="goMonth(2)" id="dot2"></div>
+  </div>
+  <div class="calendar-wrap" id="calendarWrap">
+    <div class="loading-overlay"><div class="spinner"></div> 불러오는 중...</div>
+  </div>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot"></div>
+      <span>행사 등록된 날짜 (클릭하면 상세 페이지로 이동)</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>김대중재단 청년위원회</strong><br>
+  정책전달식 활동 아카이브 · 2026
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://rwygxpiseympdhzkioyv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWd4cGlzZXltcGRoemtpb3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzgwNzUsImV4cCI6MjA5Mzg1NDA3NX0.3JWR3XVvePPlSgP8xDHsq49MA1wSVzIIUdCjy2Y1vJA';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const MONTHS = [4, 5, 6]; // 4월, 5월, 6월
+  const YEAR = 2026;
+  let currentMonthIdx = 0;
+  let eventMap = {};
+
+  const MONTH_NAMES = ['', '1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const DAY_NAMES = ['일','월','화','수','목','금','토'];
+
+  async function loadEvents() {
+    const { data } = await sb.from('events').select('event_date, event_name');
+    eventMap = {};
+    if (data) {
+      data.forEach(e => { eventMap[e.event_date] = e.event_name; });
+    }
+    renderCalendar();
+  }
+
+  function changeMonth(dir) {
+    currentMonthIdx = Math.max(0, Math.min(2, currentMonthIdx + dir));
+    renderCalendar();
+  }
+  function goMonth(idx) {
+    currentMonthIdx = idx;
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const month = MONTHS[currentMonthIdx];
+    document.getElementById('monthTitle').textContent = `2026년 ${MONTH_NAMES[month]}`;
+    document.getElementById('prevBtn').disabled = currentMonthIdx === 0;
+    document.getElementById('nextBtn').disabled = currentMonthIdx === 2;
+    [0,1,2].forEach(i => {
+      document.getElementById(`dot${i}`).className = 'month-dot' + (i === currentMonthIdx ? ' active' : '');
+    });
+
+    const firstDay = new Date(YEAR, month - 1, 1).getDay();
+    const lastDate = new Date(YEAR, month, 0).getDate();
+    const today = new Date();
+
+    let html = `
+      <div class="cal-header">
+        ${DAY_NAMES.map(d => `<div>${d}</div>`).join('')}
+      </div>
+      <div class="cal-body">
+    `;
+
+    for (let i = 0; i < firstDay; i++) {
+      html += `<div class="cal-cell empty"></div>`;
+    }
+
+    for (let d = 1; d <= lastDate; d++) {
+      const dateStr = `${YEAR}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow = (firstDay + d - 1) % 7;
+      const isToday = today.getFullYear() === YEAR && today.getMonth() + 1 === month && today.getDate() === d;
+      const hasEvent = !!eventMap[dateStr];
+
+      let classes = 'cal-cell';
+      if (dow === 0) classes += ' sunday';
+      if (dow === 6) classes += ' saturday';
+      if (isToday) classes += ' today';
+      if (hasEvent) classes += ' has-event';
+
+      const clickAttr = hasEvent ? `onclick="location.href='event.html?date=${dateStr}'"` : '';
+
+      html += `<div class="${classes}" ${clickAttr}>
+        <div class="date-num">${d}</div>
+        ${hasEvent ? `<div class="event-badge" onclick="location.href='event.html?date=${dateStr}'">${eventMap[dateStr]}</div>` : ''}
+      </div>`;
+    }
+
+    html += `</div>`;
+    document.getElementById('calendarWrap').innerHTML = html;
+  }
+
+  loadEvents();
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>위원회 소개 - 김대중재단 청년위원회</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-light: #1976D2;
+      --primary-pale: #E3F2FD;
+      --primary-dark: #0D47A1;
+      --accent: #1E88E5;
+      --text-main: #1a1a2e;
+      --text-sub: #546E7A;
+      --text-muted: #90A4AE;
+      --bg: #F8FBFF;
+      --white: #ffffff;
+      --border: #BBDEFB;
+      --shadow: 0 2px 12px rgba(21,101,192,0.10);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; }
+
+    header {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 8px rgba(21,101,192,0.07);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 20px;
+      height: 72px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-wrap a { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+    .logo-img { height: 44px; width: auto; object-fit: contain; }
+    .logo-text-fallback { font-size: 15px; font-weight: 700; color: var(--primary); line-height: 1.3; letter-spacing: -0.3px; }
+    nav a {
+      text-decoration: none; color: var(--text-sub); font-size: 14px; font-weight: 500;
+      padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+    }
+    nav a:hover { background: var(--primary-pale); color: var(--primary); }
+    nav a.active { color: var(--primary); background: var(--primary-pale); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent) 100%);
+      color: white; padding: 56px 20px 48px; text-align: center;
+    }
+    .hero-logo {
+      width: 100px; height: 100px; object-fit: contain;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%; padding: 10px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    .hero-logo-fallback {
+      width: 100px; height: 100px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .hero h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 700; letter-spacing: -0.5px; margin-bottom: 10px; }
+    .hero p { font-size: 14px; opacity: 0.85; font-weight: 300; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+    /* MAIN */
+    .main { max-width: 780px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    .section {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+      padding: 32px; margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 15px; font-weight: 700; color: var(--primary);
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary-pale);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::before {
+      content: ''; display: block;
+      width: 4px; height: 16px;
+      background: var(--primary); border-radius: 2px;
+    }
+    .intro-text {
+      font-size: 14px; line-height: 1.9; color: var(--text-sub);
+      white-space: pre-line;
+    }
+
+    /* HISTORY TABLE */
+    .history-list { display: flex; flex-direction: column; gap: 0; }
+    .history-item {
+      display: flex; gap: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f4f8;
+      align-items: flex-start;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-date {
+      flex-shrink: 0;
+      font-size: 13px; font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-pale);
+      padding: 3px 10px; border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 1px;
+      min-width: 90px;
+      text-align: center;
+    }
+    .history-content {
+      font-size: 14px; color: var(--text-sub); line-height: 1.6;
+    }
+    .history-content strong { color: var(--text-main); font-weight: 600; }
+
+    /* EDIT NOTICE */
+    .edit-notice {
+      text-align: center; padding: 24px;
+      color: var(--text-muted); font-size: 13px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: #fafcff;
+    }
+
+    footer {
+      background: var(--primary-dark); color: rgba(255,255,255,0.7);
+      text-align: center; padding: 28px 20px; font-size: 12px; line-height: 1.8;
+    }
+    footer strong { color: white; }
+
+    @media (max-width: 600px) {
+      .history-item { flex-direction: column; gap: 8px; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <a href="index.html">
+        <img src="logo.png" alt="김대중재단 청년위원회" class="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'" />
+        <span class="logo-text-fallback" id="logo-fallback" style="display:none">김대중재단<br>청년위원회</span>
+      </a>
+    </div>
+    <nav>
+      <a href="index.html">아카이브</a>
+      <a href="about.html" class="active">위원회 소개</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <img src="logo.png" alt="로고" class="hero-logo" onerror="this.style.display='none'; document.getElementById('hero-logo-fallback').style.display='flex'" />
+  <div class="hero-logo-fallback" id="hero-logo-fallback" style="display:none">🕊️</div>
+  <h1>김대중재단 청년위원회</h1>
+  <p>김대중 전 대통령의 민주주의·평화·인권 정신을 계승하여<br>청년들의 목소리를 정책으로 이어갑니다.</p>
+</div>
+
+<div class="main">
+
+  <div class="section">
+    <div class="section-title">소개</div>
+    <div class="intro-text" id="introText">
+김대중재단 청년위원회는 故 김대중 전 대통령의 민주주의, 평화, 인권, 서민 경제의 정신을 계승하고 발전시키기 위해 설립된 청년 조직입니다.
+
+청년위원회는 전국 각지의 청년 정책위원들이 직접 지역을 방문하여 현장의 목소리를 수렴하고, 이를 정책 제안으로 구체화하는 정책전달식 활동을 중심으로 운영됩니다.
+
+본 아카이브는 2026년 4월부터 6월까지 진행된 정책전달식 및 주요 활동 기록을 보존하기 위해 제작되었습니다.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">주요 활동 약력</div>
+    <div class="history-list" id="historyList">
+      <!-- 아래 내용을 직접 수정하여 약력을 입력하세요 -->
+      <div class="history-item">
+        <div class="history-date">2026. 4</div>
+        <div class="history-content"><strong>김대중재단 청년위원회 출범</strong><br>기획위원 임명 및 활동 개시</div>
+      </div>
+      <div class="history-item">
+        <div class="history-date">2026. 4~6</div>
+        <div class="history-content"><strong>전국 정책전달식 진행</strong><br>지역별 정책위원 현장 방문 및 정책 수렴 활동</div>
+      </div>
+    </div>
+    <div class="edit-notice" style="margin-top:16px; display:none" id="editNotice">
+      ※ 약력 내용은 about.html 파일의 historyList 섹션을 직접 수정하여 업데이트하세요.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>김대중재단 청년위원회</strong><br>
+  정책전달식 활동 아카이브 · 2026
+</footer>
+
+</body>
+</html>

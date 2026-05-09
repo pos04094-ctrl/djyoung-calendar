@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>행사 상세 - 김대중재단 청년위원회</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1565C0;
+      --primary-light: #1976D2;
+      --primary-pale: #E3F2FD;
+      --primary-dark: #0D47A1;
+      --accent: #1E88E5;
+      --text-main: #1a1a2e;
+      --text-sub: #546E7A;
+      --text-muted: #90A4AE;
+      --bg: #F8FBFF;
+      --white: #ffffff;
+      --border: #BBDEFB;
+      --shadow: 0 2px 12px rgba(21,101,192,0.10);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 8px rgba(21,101,192,0.07);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 20px;
+      height: 72px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-wrap a { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+    .logo-img { height: 44px; width: auto; object-fit: contain; }
+    .logo-text-fallback { font-size: 15px; font-weight: 700; color: var(--primary); line-height: 1.3; letter-spacing: -0.3px; }
+    nav a {
+      text-decoration: none; color: var(--text-sub); font-size: 14px; font-weight: 500;
+      padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+    }
+    nav a:hover { background: var(--primary-pale); color: var(--primary); }
+
+    /* BACK BAR */
+    .back-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+    }
+    .back-bar-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 12px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--primary);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 12px; border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--primary-pale);
+      transition: all 0.2s;
+    }
+    .back-btn:hover { background: var(--primary); color: white; }
+
+    /* MAIN CONTENT */
+    .main { max-width: 900px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    /* EVENT HEADER */
+    .event-header {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .event-cover {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      background: var(--primary-pale);
+    }
+    .event-cover-placeholder {
+      width: 100%; height: 220px;
+      background: linear-gradient(135deg, var(--primary-pale), var(--border));
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 14px;
+    }
+    .event-info { padding: 28px; }
+    .event-date-tag {
+      display: inline-block;
+      background: var(--primary-pale);
+      color: var(--primary);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+    .event-title {
+      font-size: clamp(20px, 4vw, 26px);
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.35;
+      letter-spacing: -0.5px;
+    }
+
+    /* SECTION */
+    .section {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 15px; font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--primary-pale);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 4px; height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* ARTICLES */
+    .article-list { display: flex; flex-direction: column; gap: 10px; }
+    .article-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.2s;
+      background: #fafcff;
+    }
+    .article-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-pale);
+      transform: translateX(3px);
+    }
+    .article-icon {
+      font-size: 18px; flex-shrink: 0;
+    }
+    .article-title {
+      font-size: 14px; font-weight: 500;
+      flex: 1; line-height: 1.4;
+    }
+    .article-arrow { color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+
+    /* PHOTOS */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .photo-item {
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+    .photo-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+      display: block;
+    }
+    .photo-item:hover img { transform: scale(1.05); }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 85vh;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute; top: 20px; right: 24px;
+      color: white; font-size: 32px; cursor: pointer;
+      line-height: 1;
+    }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      color: white; font-size: 36px; cursor: pointer;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      user-select: none;
+    }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+
+    /* LOADING */
+    .loading-overlay {
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px; color: var(--text-muted); font-size: 14px; gap: 10px;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .not-found {
+      text-align: center; padding: 80px 20px;
+      color: var(--text-muted);
+    }
+    .not-found h2 { font-size: 20px; margin-bottom: 8px; color: var(--text-sub); }
+
+    footer {
+      background: var(--primary-dark); color: rgba(255,255,255,0.7);
+      text-align: center; padding: 28px 20px;
+      font-size: 12px; line-height: 1.8;
+    }
+    footer strong { color: white; }
+
+    @media (max-width: 600px) {
+      .event-cover { height: 200px; }
+      .photo-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <a href="index.html">
+        <img src="logo.png" alt="김대중재단 청년위원회" class="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'" />
+        <span class="logo-text-fallback" id="logo-fallback" style="display:none">김대중재단<br>청년위원회</span>
+      </a>
+    </div>
+    <nav>
+      <a href="index.html">아카이브</a>
+      <a href="about.html">위원회 소개</a>
+    </nav>
+  </div>
+</header>
+
+<div class="back-bar">
+  <div class="back-bar-inner">
+    <a href="index.html" class="back-btn">&#8592; 캘린더로 돌아가기</a>
+  </div>
+</div>
+
+<div class="main" id="mainContent">
+  <div class="loading-overlay"><div class="spinner"></div> 불러오는 중...</div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+  <span class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1); event.stopPropagation()">&#8249;</span>
+  <img id="lightboxImg" src="" alt="" />
+  <span class="lightbox-nav lightbox-next" onclick="lightboxNav(1); event.stopPropagation()">&#8250;</span>
+</div>
+
+<footer>
+  <strong>김대중재단 청년위원회</strong><br>
+  정책전달식 활동 아카이브 · 2026
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://rwygxpiseympdhzkioyv.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3eWd4cGlzZXltcGRoemtpb3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNzgwNzUsImV4cCI6MjA5Mzg1NDA3NX0.3JWR3XVvePPlSgP8xDHsq49MA1wSVzIIUdCjy2Y1vJA';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const params = new URLSearchParams(location.search);
+  const dateStr = params.get('date');
+
+  let photoUrls = [];
+  let currentPhotoIdx = 0;
+
+  function formatDate(d) {
+    const [y, m, day] = d.split('-');
+    const months = ['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+    const date = new Date(+y, +m-1, +day);
+    const days = ['일','월','화','수','목','금','토'];
+    return `${y}년 ${months[+m]} ${+day}일 (${days[date.getDay()]})`;
+  }
+
+  async function loadEvent() {
+    if (!dateStr) {
+      renderNotFound('날짜 정보가 없습니다.');
+      return;
+    }
+    const { data, error } = await sb.from('events').select('*').eq('event_date', dateStr).single();
+    if (error || !data) {
+      renderNotFound('등록된 행사가 없는 날짜입니다.');
+      return;
+    }
+    document.title = `${data.event_name} - 김대중재단 청년위원회`;
+    renderEvent(data);
+  }
+
+  function renderEvent(ev) {
+    photoUrls = ev.photos || [];
+    const articles = ev.articles || [];
+
+    let coverHtml = '';
+    if (ev.cover_image_url) {
+      coverHtml = `<img src="${ev.cover_image_url}" alt="대표 이미지" class="event-cover" />`;
+    } else {
+      coverHtml = `<div class="event-cover-placeholder">대표 이미지 없음</div>`;
+    }
+
+    let articlesHtml = '';
+    if (articles.length > 0) {
+      articlesHtml = `
+        <div class="section">
+          <div class="section-title">주요 기사</div>
+          <div class="article-list">
+            ${articles.map((a, i) => `
+              <a href="${a.url}" target="_blank" rel="noopener" class="article-item">
+                <span class="article-icon">📰</span>
+                <span class="article-title">${a.title}</span>
+                <span class="article-arrow">↗</span>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    let photosHtml = '';
+    if (photoUrls.length > 0) {
+      photosHtml = `
+        <div class="section">
+          <div class="section-title">관련 사진</div>
+          <div class="photo-grid">
+            ${photoUrls.map((url, i) => `
+              <div class="photo-item" onclick="openLightbox(${i})">
+                <img src="${url}" alt="행사 사진 ${i+1}" loading="lazy" />
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('mainContent').innerHTML = `
+      <div class="event-header">
+        ${coverHtml}
+        <div class="event-info">
+          <div class="event-date-tag">${formatDate(ev.event_date)}</div>
+          <h1 class="event-title">${ev.event_name}</h1>
+        </div>
+      </div>
+      ${articlesHtml}
+      ${photosHtml}
+    `;
+  }
+
+  function renderNotFound(msg) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="not-found">
+        <h2>페이지를 찾을 수 없습니다</h2>
+        <p>${msg}</p>
+      </div>
+    `;
+  }
+
+  function openLightbox(idx) {
+    currentPhotoIdx = idx;
+    document.getElementById('lightboxImg').src = photoUrls[idx];
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox(e) {
+    if (!e || e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+  }
+  function lightboxNav(dir) {
+    currentPhotoIdx = (currentPhotoIdx + dir + photoUrls.length) % photoUrls.length;
+    document.getElementById('lightboxImg').src = photoUrls[currentPhotoIdx];
+  }
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('lightbox').classList.contains('open')) {
+      if (e.key === 'ArrowLeft') lightboxNav(-1);
+      if (e.key === 'ArrowRight') lightboxNav(1);
+      if (e.key === 'Escape') closeLightbox({target: document.getElementById('lightbox')});
+    }
+  });
+
+  loadEvent();
+</script>
+</body>
+</html>
