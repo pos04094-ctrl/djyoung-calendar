@@ -359,10 +359,13 @@
   const DAY_NAMES = ['일','월','화','수','목','금','토'];
 
   async function loadEvents() {
-    const { data } = await sb.from('events').select('event_date, event_name');
+    const { data } = await sb.from('events').select('id, event_date, event_name').order('event_date');
     eventMap = {};
     if (data) {
-      data.forEach(e => { eventMap[e.event_date] = e.event_name; });
+      data.forEach(e => {
+        if (!eventMap[e.event_date]) eventMap[e.event_date] = [];
+        eventMap[e.event_date].push({ id: e.id, name: e.event_name });
+      });
     }
     renderCalendar();
   }
@@ -404,7 +407,8 @@
       const dateStr = `${YEAR}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const dow = (firstDay + d - 1) % 7;
       const isToday = today.getFullYear() === YEAR && today.getMonth() + 1 === month && today.getDate() === d;
-      const hasEvent = !!eventMap[dateStr];
+      const eventsOnDay = eventMap[dateStr] || [];
+      const hasEvent = eventsOnDay.length > 0;
 
       let classes = 'cal-cell';
       if (dow === 0) classes += ' sunday';
@@ -412,11 +416,13 @@
       if (isToday) classes += ' today';
       if (hasEvent) classes += ' has-event';
 
-      const clickAttr = hasEvent ? `onclick="location.href='event.html?date=${dateStr}'"` : '';
+      const badges = eventsOnDay.map(ev =>
+        `<div class="event-badge" onclick="location.href='event.html?id=${ev.id}'; event.stopPropagation()">${ev.name}</div>`
+      ).join('');
 
-      html += `<div class="${classes}" ${clickAttr}>
+      html += `<div class="${classes}">
         <div class="date-num">${d}</div>
-        ${hasEvent ? `<div class="event-badge" onclick="location.href='event.html?date=${dateStr}'">${eventMap[dateStr]}</div>` : ''}
+        ${badges}
       </div>`;
     }
 
