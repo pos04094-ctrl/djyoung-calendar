@@ -458,10 +458,12 @@
     const div = document.createElement('div');
     div.className = 'article-row';
     div.innerHTML = `
-      <input type="text" placeholder="기사 제목" value="${title}" class="art-title" />
-      <input type="url" placeholder="https://..." value="${url}" class="art-url" />
+      <input type="text" placeholder="기사 제목" class="art-title" />
+      <input type="url" placeholder="https://..." class="art-url" />
       <button class="remove-btn" onclick="this.parentElement.remove(); updateAddBtn()">×</button>
     `;
+    div.querySelector('.art-title').value = title;
+    div.querySelector('.art-url').value = url;
     rows.appendChild(div);
     updateAddBtn();
   }
